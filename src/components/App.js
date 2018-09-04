@@ -23,9 +23,9 @@ class App extends React.Component {
   onFindPetsClick = () => {
     if (this.state.filters.type === 'all'){
       fetch('/api/pets')
-        .then(function(response){
+        .then ((response) =>{
           return response.json()
-        }).then(function(myJson) {
+        }).then((myJson) => {
             debugger
             // does this need to be a string?
             this.setState(
@@ -34,9 +34,9 @@ class App extends React.Component {
           })
     }else{
       fetch(`/api/pets?type=${this.state.filters.type}`)
-      .then(function(response){
+      .then((response) =>{
         return response.json()
-      }).then(function(myJson) {
+      }).then((myJson) => {
         this.setState(
           {pets: JSON.stringify(myJson)}
         )
