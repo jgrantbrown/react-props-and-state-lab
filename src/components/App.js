@@ -5,13 +5,21 @@ import PetBrowser from './PetBrowser'
 
 class App extends React.Component {
   constructor(props) {
-    super(props);
+    super();
     this.state = {
       pets: [],
       filters: {
         type: 'all'
       }
     }
+  }
+
+  onAdoptPet = (petId) => {
+    const pets = this.state.pets.map(p => {
+
+     return p.id === petId ? { ...p, isAdopted: true } : p;
+   });
+   this.setState({ pets });
   }
 
   onChangeType = (e) =>{
@@ -21,28 +29,25 @@ class App extends React.Component {
     }
 
   onFindPetsClick = () => {
-    if (this.state.filters.type === 'all'){
-      fetch('/api/pets')
-        .then ((response) =>{
+    let url = ''
+      if (this.state.filters.type === 'all'){
+          url = '/api/pets'
+      }else{
+           url = `/api/pets?type=${this.state.filters.type}`
+      }
+
+      fetch(url)
+        .then ((response) => {
           return response.json()
         }).then((myJson) => {
-            debugger
             // does this need to be a string?
             this.setState(
               {pets: myJson}
             )
           })
-    }else{
-      fetch(`/api/pets?type=${this.state.filters.type}`)
-      .then((response) =>{
-        return response.json()
-      }).then((myJson) => {
-        this.setState(
-          {pets: JSON.stringify(myJson)}
-        )
-        })
     }
-  }
+
+
 
   render() {
     return (
@@ -54,11 +59,11 @@ class App extends React.Component {
           <div className="ui grid">
             <div className="four wide column">
 
-              <Filters onChangeType={this.onChangeType.bind(this)} onClick={this.onFindPetsClick.bind(this)} />
+              <Filters onChangeType={this.onChangeType.bind(this)} onFindPetsClick={this.onFindPetsClick.bind(this)} />
 
             </div>
             <div className="twelve wide column">
-              <PetBrowser pets={this.state.pets}/>
+              <PetBrowser pets={this.state.pets}  onAdoptPet={this.onAdoptPet}/>
             </div>
           </div>
         </div>
